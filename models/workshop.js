@@ -1,62 +1,84 @@
-
-
 const mongoose = require('mongoose');
 
-
 const workshopSchema = new mongoose.Schema({
-    workshopId:{
+    userId:{
         type: String,
+    },
+    userName:{
+        type:String,
     },
     workshopName:{
         type: String,
-        required: true,
     },
     venue:{
         type: String,
-        required:true,
     },
-    startDate:{
+    dd:{
         type:Number,
-        required:true,
     },
-    endDate:{
+    mm:{
         type:Number,
-        required:true,
+    },
+    yyyy:{
+        type:Number,
+    },
+    count:{
+        type:Number,
     },
     certificate:{
         type:String,
     }
-});
+}
+);
+
+/*
+workshop {name, venue, startdate, enddate, certificate}
+journal {journal title, paper title, volume, issue, date, ugc listed}
+conferences {title, venue, date, index}
+*/
+
 
 const Workshop = mongoose.model('Workshop',workshopSchema);
 module.exports = Workshop;
 
-async function getWorkshopIdFunction({workshopName,venue,startDate,endDate})
+async function createWorkshop(workshop)
 {
     try{
-        console.log(workshopName);
-        const workshopObject = await Workshop.findOneAndUpdate({
-            workshopName,
-            venue,
-            startDate,
-            endDate
-        },
-        {
-            $setOnInsert: { workshopName,
-                venue,
-                startDate,
-                endDate,
-                },
-        } ,{
-            returnOriginal: false,
-            upsert: true,
-          }).select('workshopId').exec();
-          //console.log(workshopObject);
-        return workshopObject;
+        workshopExists = await getWorkshop(workshop);
+        if(!workshopExists){
+            await Workshop.create(workshop);
+        }
+        return;
+    }
+    catch (err){
+        console.log(`Following error occurred while finding the creatWorkshopFunction : ${err}`);
+        throw err;
+    }
+
+}
+module.exports.createWorkshop = createWorkshop;
+
+async function getWorkshop(workshop)
+{
+    try{
+        const obj = await Workshop.findOne({
+            userId:workshop.userId,
+            workshopName:workshop.workshopName,
+            dd:workshop.dd,
+            mm:workshop.mm,
+            yyyy:workshop.yyyy,
+        });
+        return obj;
     }
     catch(err){
-        console.log(`in models/workshop.js, ${err}`);
+        console.log(`Following error occurred while finding the getWorkshopFunction : ${err}`);
+        throw err;
     }
-    
 }
-module.exports.getWorkshopId = getWorkshopIdFunction;
+
+module.exports.getWorkshop = getWorkshop;
+
+
+
+
+

@@ -14,7 +14,7 @@ const app = express();
 
 async function connectToDatabase(){
     try{
-        const connection = await mongoose.connect('mongodb://localhost:27017/frs',{
+        const connection = await mongoose.connect('mongodb+srv://DIPPHakunaMatatadbAdmin:beanbag@123@clusterdipp-gsdin.mongodb.net/frs?retryWrites=true',{
             useNewUrlParser: true
         }); 
         console.log(`connection established successfully`);
@@ -44,7 +44,7 @@ connectToDatabase().then(() => {
 
     //routes
     const index = require('./routes/index');
-    app.use('/post',index);
+    app.use('/',index);
 
     const admin = require('./routes/admin');
     app.use('/admin',admin)
