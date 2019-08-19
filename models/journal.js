@@ -37,7 +37,7 @@ module.exports = Journal;
 async function createJournal(journal)
 {
     try{
-        journalExists = await getJournal(workshop);
+        journalExists = await getJournal(journal);
         if(!journalExists){
             await Journal.create(journal);
         }
