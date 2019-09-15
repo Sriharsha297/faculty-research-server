@@ -3,6 +3,7 @@ const router = express.Router();
 const Workshop =require('./../models/workshop');
 const Conference = require('./../models/conference');
 const Journal = require('./../models/journal');
+const Key = require('./../models/key');
 const mongoose = require('mongoose');
 const fs = require('fs');
 
@@ -16,6 +17,27 @@ router.route('/login')
             message:"Successful"
         })
     })
+
+router.route('/generateKey')
+.get((req,res) => {
+    const key = Math.floor(100000 + Math.random() * 900000).toString();
+    Key.collection.drop().then((ok) => {
+        Key.create({key: key}).then((ok) => {
+            res.status(200).json({
+                message:"Successful",
+                key: key,
+            })
+        })
+        .catch((err) => {
+            throw new Error(err);
+        })
+    })
+    .catch((err) => {
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+    });
+})
 
 router.route('/generateworkshopCSV')
     .get((req, res) => {
